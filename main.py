@@ -70,7 +70,7 @@ plt.title("Distribution of Meeting Start Times")
 
 multiplicador_reunioes_por_dia = (
     7  # gera 5.357 reunioes por dia em media
-)
+) # COMENTARIO PRO HALAK: OLHA DIREITO O QUE EU FIZ AQUI
 numero_usuarios_por_dia = 10000
 numero_dias_random_walks = 30
 capacidade_usuarios_vm = 30
@@ -94,7 +94,7 @@ for dia in range(numero_dias_random_walks):
             # print("Hora:", hora)
             probabilidade_ter_reuniao_nesse_horario = (
                 distribuicao_horario_inicio[hora]
-            ) * multiplicador_reunioes_por_dia
+            ) * multiplicador_reunioes_por_dia # COMENTARIO PRO HALAK: OLHA DIREITO O QUE EU FIZ AQUI
             # print(
             #     "Probabilidade:",
             #     probabilidade_ter_reuniao_nesse_horario,
