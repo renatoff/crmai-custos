@@ -71,17 +71,25 @@ plt.title("Distribution of Meeting Start Times")
 multiplicador_reunioes_por_dia = (
     7  # gera 5.357 reunioes por dia em media
 )
-numero_usuarios_por_dia = 30
-numero_dias_random_walks = 1000
+numero_usuarios_por_dia = 10000
+numero_dias_random_walks = 30
+capacidade_usuarios_vm = 30
+custo_vm_por_hora = 0.25
+# Print all above values
+print("Numero usuarios por dia:", numero_usuarios_por_dia)
+print("Numero dias random walks:", numero_dias_random_walks)
+print("Capacidade usuarios vm:", capacidade_usuarios_vm)
+print("Custo vm por hora:", custo_vm_por_hora)
 
-horas_dia = []
+horas_vm_por_dia = []
 for dia in range(numero_dias_random_walks):
     usuarios = []
     for usuario in range(numero_usuarios_por_dia):
         hora = list(distribuicao_horario_inicio.keys())[0]
         reunioes = []
         while (
-            hora < list(distribuicao_horario_inicio.keys())[-1]
+            hora
+            < list(distribuicao_horario_inicio.keys())[-1]
         ):
             # print("Hora:", hora)
             probabilidade_ter_reuniao_nesse_horario = (
@@ -95,7 +103,8 @@ for dia in range(numero_dias_random_walks):
                 [True, False],
                 p=[
                     probabilidade_ter_reuniao_nesse_horario,
-                    1 - probabilidade_ter_reuniao_nesse_horario,
+                    1
+                    - probabilidade_ter_reuniao_nesse_horario,
                 ],
             )
             # print("Tem reuniao:", tem_reuniao)
@@ -113,7 +122,10 @@ for dia in range(numero_dias_random_walks):
                 )
                 # print("Duracao:", duracao_reuniao)
                 reunioes.append(
-                    {"hora": hora, "duracao": duracao_reuniao}
+                    {
+                        "hora": hora,
+                        "duracao": duracao_reuniao,
+                    }
                 )
 
             # print("---------------")
@@ -125,24 +137,40 @@ for dia in range(numero_dias_random_walks):
 
     horas = 0
     for hora in distribuicao_horario_inicio.keys():
-        tem_reuniao = False
+        usuarios_online = 0
         for usuario in usuarios:
             for reuniao in usuario:
-
                 if (
                     hora >= reuniao["hora"]
                     and hora
                     <= reuniao["hora"] + reuniao["duracao"]
                 ):
-                    tem_reuniao = True
+                    usuarios_online += 1
                     break
 
-            if tem_reuniao:
-                horas += 0.25
-                break
+        vms_online = (
+            usuarios_online // capacidade_usuarios_vm
+            + (
+                1
+                if usuarios_online % capacidade_usuarios_vm
+                else 0
+            )
+        )
+        horas += 0.25 * vms_online
         hora += 0.25
 
-    horas_dia.append(horas)
+    horas_vm_por_dia.append(horas)
 
-np.mean(horas_dia)
+media_horas_vm_por_dia = np.mean(horas_vm_por_dia)
+
+custo_por_usuario_dia = (
+    media_horas_vm_por_dia / numero_usuarios_por_dia
+) * custo_vm_por_hora
+
+print("Numero usuarios por dia:", numero_usuarios_por_dia)
+print("Custo por usuario por dia:", custo_por_usuario_dia)
+print(
+    "Custo por usuario por mes (21 dias):",
+    custo_por_usuario_dia * 21,
+)
 # %%
